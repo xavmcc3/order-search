@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from datetime import datetime
 from clrprint import clrprint
 from pathlib import Path
 import openpyxl
@@ -29,6 +30,7 @@ if __name__ == "__main__":
     csv_path = "./data/index.csv"
     folder = os.getenv("EXCEL_DIR")
 
+    start_time = datetime.now()
     open(csv_path, 'w').close()
     for file in os.listdir(folder):
         if not file.endswith(".xlsx"):
@@ -41,4 +43,4 @@ if __name__ == "__main__":
         except Exception as e:
             clrprint("[ERROR]", "in", path, clr="r,w,m")
             print(e)
-    clrprint("[DONE]", "Operator spreadsheets serialized.", clr="g,w")
+    clrprint("[DONE] ", "Operator spreadsheets serialized in ", f"{datetime.now() - start_time}", ".", sep="", clr="g,w,y,w")

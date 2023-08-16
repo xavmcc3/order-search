@@ -1,0 +1,131 @@
+html, body {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+body {
+    flex-flow: column nowrap;
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+table {
+    border: 2px solid black;
+    border-collapse: separate;
+    word-wrap: break-word;
+    table-layout: fixed;
+    border-spacing: 0;
+
+    box-sizing: border-box;
+
+    border-radius: 15px;
+    max-width: 100%;
+    width: 100%;
+}
+
+table th:not(:last-child), table td:not(:last-child) {
+    border-right: 1px solid black;
+}
+
+table>thead>tr:not(:last-child)>th,
+table>thead>tr:not(:last-child)>td,
+table>tbody>tr:not(:last-child)>th,
+table>tbody>tr:not(:last-child)>td,
+table>tfoot>tr:not(:last-child)>th,
+table>tfoot>tr:not(:last-child)>td,
+table>tr:not(:last-child)>td,
+table>tr:not(:last-child)>th,
+table>thead:not(:last-child),
+table>tbody:not(:last-child),
+table>tfoot:not(:last-child) {
+ border-bottom: 1px solid black;
+}
+
+td {
+    /* border-collapse: collapse; */
+    /* border: 1px solid black; */
+    text-align: center;
+    padding: 5px;
+}
+
+td.selected {
+    background-color: black;
+    color: aliceblue;
+
+    box-shadow: 0 0 0.4em #000000;
+}
+
+table input[type=text] {
+    box-sizing: border-box;
+    text-align: center;
+    width: 100%;
+
+    border: 3px solid transparent;
+    border-radius: 10px;
+    outline: none;
+    margin: 0;
+}
+
+table input[type=text]:focus {
+    border: 3px solid #ff2fdc;
+    caret-color: #ff2fdc;
+    z-index: 5;
+    margin: 0;
+}
+
+.content {
+    padding: 10px 20px;
+    position: relative;
+    gap: 5px;
+    height: 100%;
+}
+
+.spacer {
+    display: inline-block;
+    width: var(--width);
+    --width: 1em;
+}
+
+.full-spacer {
+    display: inline-block;
+    flex: 1;
+}
+
+ul.title-bar {
+    border: 1px solid black;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    align-items: center;
+    display: flex;
+
+    position: sticky;
+    z-index: 124;
+    top: 0;
+
+    background: #ffffff;
+}
+
+.down {
+    display: flex;
+    flex-flow: column nowrap;
+    box-sizing: border-box;
+}
+
+.side {
+    display: flex;
+    flex-flow: row nowrap;
+    box-sizing: border-box;
+}
+
+.card {
+    border: 1px solid black;
+    border-radius: 25px;
+    padding: 5px 20px;
+}
