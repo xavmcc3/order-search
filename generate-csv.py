@@ -14,21 +14,11 @@ def write_excel_to_csv(excel_path, csv_path):
 
     with open(csv_path, 'a', newline="") as f:
         c = csv.writer(f)
-        for row in ws.rows:
-            try:
-                if row[0].row == 1:
-                    continue
-            except AttributeError:
-                pass
+        for row in ws.iter_rows(min_row=2, max_col=11):
             if row[0].value == None and row[1].value == None:
                 continue
             values = []
             for cell in row:
-                try:
-                    if cell.column > 11:
-                        break
-                except AttributeError:
-                    pass
                 values.append(cell.value)
             c.writerow(values)
         f.truncate()
