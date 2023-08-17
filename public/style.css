@@ -128,4 +128,18 @@ ul.title-bar {
     border: 1px solid black;
     border-radius: 25px;
     padding: 5px 20px;
+
+    max-height: fit-content;
+}
+
+.chip {
+    background: var(--color);
+    border-radius: 7px;
+    --color: #ff2fdc;
+    padding: 3px 7px;
+}
+
+.glow {
+    box-shadow: 0 0 0.4em var(--color);
+    --color: #ff2fdc;
 }

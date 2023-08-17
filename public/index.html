@@ -5,23 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Order Tool</title>
+
+    <script src="./app.js" defer></script>
 </head>
 <body>
     <ul class="title-bar pywebview-drag-region">
-        <li><span class=""></span>Order Tool</li>
-        <li><button>X</button></li>
+        <li><span class="spacer" style="--width: 10px;"></span>Order Tool</li>
+        <li><button onclick="destroy()">X</button></li>
     </ul>
 
     <div class="content down">
         <div class="side">
             <div class="down">
                 <h1>Order Tool</h1>
-                <h2>Search <span class="chip glow" style="--color: #ff0000;">Operator Spreadsheets</span></h2>
+                <h2>Search <span class="chip glow" style="--color: #2fff05;">Operator Spreadsheets</span></h2>
+                <p id="log"></p>
             </div>
             <span class="full-spacer"></span>
             <div class="card">
                 <h3>Last Update</h3>
-                <p>8/18/23</p>
+                <p style="margin-top: -15px;">8/18/23</p>
+
+                <input type="button" value="Choose Folder"> Dir
+                <br>
 
                 <button>Update Now</button>
             </div>
@@ -46,12 +52,12 @@
             </tr>
         </table>
 
-        <br>
-
         <div class="side">
             <span class="full-spacer"></span>
             <button>Search</button>
         </div>
+
+        <br>
     </div>
 </body>
 </html>
