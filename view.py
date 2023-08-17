@@ -71,5 +71,9 @@ if __name__ == "__main__":
         js_api=api
         )
     
-    api.set_window(window)
-    webview.start(main, window, http_server=True)
+    try:
+        api.set_window(window)
+        webview.start(main, window, http_server=True)
+    except KeyError:
+        print("Window closed")
+        sys.exit()

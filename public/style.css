@@ -7,9 +7,10 @@ html, body {
 
 body {
     flex-flow: column nowrap;
-    display: flex;
     justify-content: stretch;
+    background: #ffffff;
     align-items: stretch;
+    display: flex;
 }
 
 table {
@@ -79,8 +80,11 @@ table input[type=text]:focus {
 .content {
     padding: 10px 20px;
     position: relative;
-    gap: 5px;
     height: 100%;
+    gap: 5px;
+
+    background: #00000017;
+    border-radius: 15px 0 0 0;
 }
 
 .spacer {
@@ -95,7 +99,6 @@ table input[type=text]:focus {
 }
 
 ul.title-bar {
-    border: 1px solid black;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -108,8 +111,6 @@ ul.title-bar {
     position: sticky;
     z-index: 124;
     top: 0;
-
-    background: #ffffff;
 }
 
 .down {
