@@ -1,3 +1,6 @@
+import search_csv
+
+import pandas as pd
 import threading
 import webview
 import random
@@ -13,19 +16,26 @@ class Api:
 
     def init(self):
         response = {
-            'message': 'Hello from Python {0}'.format(sys.version)
+            'message': 'PyWebView Ready'
         }
         return response
 
-    def getRandomNumber(self):
-        response = {
-            'message': 'Here is a random number courtesy of randint: {0}'.format(random.randint(0, 100000000))
-        }
-        return response
     
     def destroy(self):
         self.window.destroy()
-        return { 'message': 'kms' }
+
+    def doSearch(self, data):
+        print(data)
+        st = time.time()
+        results = search_csv.search_for(data[-1], len(data) - 1, max_col=5);
+        print(results)
+
+        response = {
+            'message': f'search completed in {(st - time.time())}',
+            'data': results.to_markdown()
+        }
+        return response
+    
 
     def doHeavyStuff(self):
         time.sleep(0.1)  # sleep to prevent from the ui thread from freezing for a moment
@@ -47,12 +57,6 @@ class Api:
         time.sleep(0.1)
         self.cancel_heavy_stuff_flag = True
 
-    def sayHelloTo(self, name):
-        response = {
-            'message': 'Hello {0}!'.format(name)
-        }
-        return response
-
     def error(self):
         raise Exception('This is a Python exception')
 
@@ -68,7 +72,7 @@ if __name__ == "__main__":
         resizable=False,
         fullscreen=False,
         frameless=True,
-        js_api=api
+        js_api=api,
         )
     
     try:

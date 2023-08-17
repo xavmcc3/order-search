@@ -14,50 +14,60 @@
         <li><button onclick="destroy()">X</button></li>
     </ul>
 
-    <div class="content down">
-        <div class="side">
-            <div class="down">
-                <h1>Order Tool</h1>
-                <h2>Search <span class="chip glow" style="--color: #2fff05;">Operator Spreadsheets</span></h2>
-                <p id="log"></p>
-            </div>
-            <span class="full-spacer"></span>
-            <div class="card">
-                <h3>Last Update</h3>
-                <p style="margin-top: -15px;">8/18/23</p>
+    <div class="side" style="flex: 1; display: flex; overflow: auto;">
+        <div class="down"><span class="spacer"></span></div>
+        <div class="scrollable down">
+            <div class="content down">
+                <div class="side">
+                    <div class="down">
+                        <h1>Order Tool</h1>
+                        <h2>Search <span class="chip glow" style="--color: #2fff05;">Operator Spreadsheets</span></h2>
+                        <span><input type="button" value="Choose Folder"> <span class="Folder">C:\Users\Name\Files\Spreadsheets\</span></span>
+                        <p id="log"></p>
+                    </div>
+                    <span class="full-spacer"></span>
+                    <div class="card">
+                        <h3>Last Update</h3>
+                        <p style="margin-top: -15px;">8/18/23</p>
 
-                <input type="button" value="Choose Folder"> Dir
-                <br>
+                        <button>Update Now</button>
+                    </div>
+                </div>
 
-                <button>Update Now</button>
+                <span class="full-spacer"></span>
+
+                <form onsubmit="doSearch(this)">
+                    <table>
+                        <tr>
+                            <td>First Number</td>
+                            <td>Second Number</td>
+                            <td>idk</td>
+                            <td>idk</td>
+                            <td>Name</td>
+                            <td>Date</td>
+                        </tr>
+                        <tr>
+                            <td><input type="number" min="0" step="1" placeholder="00000000"></td>
+                            <td><input type="number" onscroll="" min="0" step="1" placeholder="0000000000"></td>
+                            <td></td>
+                            <td></td>
+                            <td><input type="text" placeholder="Name"></td>
+                            <td><input type="date"></td>
+                        </tr>
+                    </table>
+
+                    <br>
+
+                    <div class="side">
+                        <span class="full-spacer"></span>
+                        <span id="search-info">Search info</span>
+                        <input type="submit" value="Search">
+                    </div>
+                </form>
+                <div id="response-container" style="word-wrap: break-word; white-space: normal; background: #000000; color: #ffffff; padding: 10px; border-radius: 5px;"></div>
+                <span>&nbsp;</span>
             </div>
         </div>
-
-        <span class="full-spacer"></span>
-
-        <table>
-            <tr>
-                <td>1</td>
-                <td class="selected">2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-            </tr>
-            <tr>
-                <td><input type="text"></td>
-                <td class="selected"><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-                <td><input type="text"></td>
-            </tr>
-        </table>
-
-        <div class="side">
-            <span class="full-spacer"></span>
-            <button>Search</button>
-        </div>
-
-        <br>
     </div>
 </body>
 </html>

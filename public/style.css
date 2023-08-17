@@ -3,6 +3,8 @@ html, body {
     height: 100%;
     width: 100%;
     margin: 0;
+
+    user-select: none;
 }
 
 body {
@@ -11,6 +13,9 @@ body {
     background: #ffffff;
     align-items: stretch;
     display: flex;
+
+    flex-flow: column nowrap;
+    justify-content: flex-start;
 }
 
 table {
@@ -45,9 +50,23 @@ table>tfoot:not(:last-child) {
  border-bottom: 1px solid black;
 }
 
+table tr:first-child td:first-child {
+    border-radius: 10px 0 0 0;
+}
+
+table tr:first-child td:last-child {
+    border-radius: 0 10px 0 0;
+}
+
+table tr:last-child td:first-child {
+    border-radius:0 0 0 10px;
+}
+
+table tr:last-child td:last-child {
+    border-radius: 0 0 10px 0;
+}
+
 td {
-    /* border-collapse: collapse; */
-    /* border: 1px solid black; */
     text-align: center;
     padding: 5px;
 }
@@ -59,7 +78,7 @@ td.selected {
     box-shadow: 0 0 0.4em #000000;
 }
 
-table input[type=text] {
+table input {
     box-sizing: border-box;
     text-align: center;
     width: 100%;
@@ -70,11 +89,47 @@ table input[type=text] {
     margin: 0;
 }
 
-table input[type=text]:focus {
+@keyframes shake {
+    0% {
+        margin-left: 0rem;
+    }
+    25% {
+        margin-left: 0.5rem;
+    }
+    75% {
+        margin-left: -0.5rem;
+    }
+    100% {
+        margin-left: 0rem;
+    }
+}
+
+input:invalid {
+    animation: shake 0.2s ease-in-out 0s 2;
+    box-shadow: 0 0 0.6rem #ff0000;
+    border-color: #ff0000 !important;
+}
+
+table input:focus{
     border: 3px solid #ff2fdc;
     caret-color: #ff2fdc;
     z-index: 5;
     margin: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number]{
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+#search-info {
+    margin-right: 10px;
 }
 
 .content {
@@ -82,9 +137,15 @@ table input[type=text]:focus {
     position: relative;
     height: 100%;
     gap: 5px;
+}
 
-    background: #00000017;
+.scrollable {
     border-radius: 15px 0 0 0;
+    background: #00000017;
+    flex: 1;
+    display: flex;
+    overflow: auto;
+    height: 100%;
 }
 
 .spacer {
@@ -98,6 +159,10 @@ table input[type=text]:focus {
     flex: 1;
 }
 
+td {
+    user-select: none;
+}
+
 ul.title-bar {
     list-style: none;
     padding: 0;
@@ -107,6 +172,8 @@ ul.title-bar {
     flex-flow: row nowrap;
     align-items: center;
     display: flex;
+
+    background: #ffffff;
 
     position: sticky;
     z-index: 124;
