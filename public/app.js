@@ -2,11 +2,6 @@ document.querySelectorAll('form').forEach(form => form.addEventListener('submit'
 const log = document.getElementById('response-container');
 function handleForm(event) { event.preventDefault(); }
 addEventListener('pywebviewready', main);
-addEventListener("wheel", () => {
-    if(document.activeElement.type === "number"){
-        // document.activeElement.blur();
-    }
-});
 
 
 function getColumn(table, cell) {
@@ -31,10 +26,9 @@ function resetTable(table) {
 }
 
 function addRow(table, content) {
-    const parent = table.getElementsByTagName('tbody')[0];
-    const row = parent.insertRow(-1);
+    const row = table.insertRow(-1);
     for(const value of content) {
-        const cell = row.insertCell(0);
+        const cell = row.insertCell(-1);
 
         const element = document.createElement('p');
         element.innerText = value;
@@ -44,11 +38,38 @@ function addRow(table, content) {
     return row;
 }
 
+function removeTable() {
+    document.querySelector('#results-area').innerHTML = "";
+}
+
+function createTable(data) {
+    table = document.createElement('table');
+    table.classList.add('data')
+    removeTable();
+
+    addRow(table, ["First Number", "Second Number", "idk", "idk", "Name", "Date"])
+
+    for(const row of data) {
+        row_arr = []
+        for(const cell in row) {
+            if(isNaN(Math.round(cell))) continue;
+            const value = row[cell];
+
+            row_arr[Math.round(cell)] = value;
+        }
+
+        addRow(table, row_arr);
+    }
+
+    document.querySelector('#results-area').appendChild(table);
+    return table;
+}
+
 function main() {
     // Highlight column on focus
-    document.querySelectorAll('table input').forEach(input => input.addEventListener('focus', event => {
+    document.querySelectorAll('#table input').forEach(input => input.addEventListener('focus', event => {
         cell = event.target.closest('td')
-        column = getColumn(event.target.closest('table'), cell);
+        column = getColumn(event.target.closest('#table'), cell);
 
         document.querySelectorAll('td.selected').forEach(td => {
             if(td == cell)
@@ -63,8 +84,8 @@ function main() {
     }));
 
     // Remove other inputs on type
-    document.querySelectorAll('table input').forEach(input => input.addEventListener('input', event => {
-        document.querySelectorAll('table input').forEach(input => {
+    document.querySelectorAll('#table input').forEach(input => input.addEventListener('input', event => {
+        document.querySelectorAll('#table input').forEach(input => {
             if(input == event.target)
                 return;
 
@@ -73,16 +94,16 @@ function main() {
     }));
 
     // Select input on click
-    document.querySelector('table').addEventListener('click', event => {
+    document.querySelector('#table').addEventListener('click', event => {
         const cell = event.target.closest('td')
-        const column = getColumn(event.target.closest('table'), cell);
+        const column = getColumn(event.target.closest('#table'), cell);
 
-        let input = column.find(element => element.querySelector('table input') != null);
+        let input = column.find(element => element.querySelector('#table input') != null);
         if(input == null) return;
 
-        input = input.querySelector('table input');
+        input = input.querySelector('#table input');
         if(document.activeElement != input)
-            input.focus();
+            input.select();// input.focus();
     });
 
     initialize();
@@ -104,8 +125,21 @@ function doSearch(form) {
         formPackage[index] = input.value;
     });
 
-    pywebview.api.doSearch(formPackage).then(res => {
-        log.innerText = res.data + '\n';
+    const col = formPackage.length;
+    const val = formPackage.pop();
+    if(val == null) return;
+    
+    const btn = document.querySelector('button[type=submit]');
+    btn.disabled = true;
+    
+    removeTable();
+    form.reset();
+
+    pywebview.api.doSearch(val, col).then(res => {
+        log.innerText = res.message + '\n';
+        data = JSON.parse(res.data)["data"];
+        btn.disabled = false;
+        createTable(data);
     }).catch(err => {
         log.innerText = err.message + '\n';
     })

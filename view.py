@@ -16,7 +16,7 @@ class Api:
 
     def init(self):
         response = {
-            'message': 'PyWebView Ready'
+            'message': 'Search Orders'
         }
         return response
 
@@ -24,15 +24,13 @@ class Api:
     def destroy(self):
         self.window.destroy()
 
-    def doSearch(self, data):
-        print(data)
+    def doSearch(self, value, column):
         st = time.time()
-        results = search_csv.search_for(data[-1], len(data) - 1, max_col=5);
-        print(results)
+        results = search_csv.search_for(value, max(0, column - 1), max_col=6);
 
         response = {
-            'message': f'search completed in {(st - time.time())}',
-            'data': results.to_markdown()
+            'message': f'search completed in {round((time.time() - st) * 100) / 100}s',
+            'data': results.to_json(orient='table')
         }
         return response
     

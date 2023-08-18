@@ -2,15 +2,18 @@ from clrprint import clrprint
 from datetime import datetime
 import pandas as pd
 
+def str_to_time(string):
+    return datetime.strptime(string, "%Y-%m-%d")
+
+COLUMN_TYPES = [int, int, None, None, str, str_to_time]
+
 def search_for(target, column=0, chunksize=1000, max_col=11):
     results = pd.DataFrame()
     cols = range(0, max_col)
     for chunk in pd.read_csv('./data/index.csv', encoding="ISO-8859-1", chunksize=chunksize, header=None, usecols=cols):
         df = chunk.fillna(0)
-        target_type = pd.api.types.infer_dtype(df.iloc[:, column], skipna=True)
-        print(pd.Series(target).convert_dtypes(infer_objects=True))
-
-        found = df.loc[df.iloc[:, column] == target]
+        target_oftype = COLUMN_TYPES[column](target)
+        found = df.loc[df.iloc[:, column] == target_oftype]
         results = pd.concat([results, found], ignore_index=True, sort=False)
     return results
 

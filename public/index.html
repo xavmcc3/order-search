@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./order-tool.ico" type="image/x-icon">
     <title>Order Tool</title>
 
     <script src="./app.js" defer></script>
 </head>
 <body>
     <ul class="title-bar pywebview-drag-region">
-        <li><span class="spacer" style="--width: 10px;"></span>Order Tool</li>
-        <li><button onclick="destroy()">X</button></li>
+        <li><span class="spacer" style="--width: 5px;"></span><span class="darker"><img src="order-tool.png">Order Tool</span></li>
+        <li><button id="kill" onclick="destroy()">X</button></li>
     </ul>
 
     <div class="side" style="flex: 1; display: flex; overflow: auto;">
@@ -20,13 +21,11 @@
             <div class="content down">
                 <div class="side">
                     <div class="down">
-                        <h1>Order Tool</h1>
-                        <h2>Search <span class="chip glow" style="--color: #2fff05;">Operator Spreadsheets</span></h2>
-                        <span><input type="button" value="Choose Folder"> <span class="Folder">C:\Users\Name\Files\Spreadsheets\</span></span>
+                        <h1>Search Orders</h1>
+                        <p class="subtitle">in <span class="chip">C:\Users\Name\Files\Spreadsheets\</span></p>
                         <p id="log"></p>
                     </div>
-                    <span class="full-spacer"></span>
-                    <div class="card">
+                    <div class="card glow" style="flex: 1; margin-left: 20px;">
                         <h3>Last Update</h3>
                         <p style="margin-top: -15px;">8/18/23</p>
 
@@ -34,10 +33,11 @@
                     </div>
                 </div>
 
-                <span class="full-spacer"></span>
+                <!-- <span class="full-spacer"></span> -->
+                <div style="height: 100px;"></div>
 
                 <form onsubmit="doSearch(this)">
-                    <table>
+                    <table id="table">
                         <tr>
                             <td>First Number</td>
                             <td>Second Number</td>
@@ -47,12 +47,12 @@
                             <td>Date</td>
                         </tr>
                         <tr>
-                            <td><input type="number" min="0" step="1" placeholder="00000000"></td>
+                            <td><input type="number" min="0" step="1" placeholder="00000000" minlength="3"></td>
                             <td><input type="number" onscroll="" min="0" step="1" placeholder="0000000000"></td>
                             <td></td>
                             <td></td>
-                            <td><input type="text" placeholder="Name"></td>
-                            <td><input type="date"></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </table>
 
@@ -60,10 +60,18 @@
 
                     <div class="side">
                         <span class="full-spacer"></span>
-                        <span id="search-info">Search info</span>
-                        <input type="submit" value="Search">
+                        <button type="submit">
+                            <span class="circle" aria-hidden="true">
+                                <span class="icon arrow"></span>
+                                <span class="icon spinner"></span>
+                            </span>
+                            <span class="button-text">Search</span>
+                        </button>
                     </div>
                 </form>
+
+                <div id="results-area"></div>
+
                 <div id="response-container" style="word-wrap: break-word; white-space: normal; background: #000000; color: #ffffff; padding: 10px; border-radius: 5px;"></div>
                 <span>&nbsp;</span>
             </div>
