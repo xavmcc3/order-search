@@ -50,8 +50,9 @@ table:not(#table) tr:first-child {
     top: -1px;
 }
 
-table:not(#table) tr:not(:first-child) td {
-    user-select: contain;
+table:not(#table) tr:not(:first-child) td * {
+    user-select: text;
+    cursor: text;
 }
 
 button {
@@ -546,11 +547,14 @@ ul.title-bar {
     position: sticky;
     z-index: 124;
     top: 0;
+
+    background-color: #ffffff;
+    box-shadow: 0 0 0.8em #00000018;
 }
 
 .darker {
-    box-shadow: 0 0 0.8em #00000018;
-    background-color: #ffffff;
+    /* box-shadow: 0 0 0.8em #00000018; */
+    /* background-color: #ffffff; */
     display: inline-block;
     padding: 3px 8px;
     border-radius: 10px;
@@ -559,24 +563,25 @@ ul.title-bar {
 #kill {
     display: inline-block;
     background: #ffffff;
-    border-radius: 10px;
+    border-radius: 25px;
     font-weight: bold;
     position: relative;
     padding: 3px 8px;
     border: none;
 
-    box-shadow: 0 0 0.8em #0000002d;
     transition: all 0.14s ease-out;
+    box-shadow: none;
+    aspect-ratio: 1;
     z-index: 1;
 }
 
 #kill::before {
     top: 0; left: 0; right: 0; bottom: 0;
-    border-radius: 10px;
+    border-radius: 25px;
     position: absolute;
     content: '';
 
-    background-image: linear-gradient(150deg, #ff0000, #ff0000);
+    background: linear-gradient(150deg, #ff1e1e, #ff0000);
     transition: all 0.14s ease-out;
     z-index: -1;
     opacity: 0;
