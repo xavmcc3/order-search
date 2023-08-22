@@ -10,8 +10,21 @@ COLUMN_TYPES = [int, int, None, None, str, str_to_time]
 def search_for(target, column=0, chunksize=1000, max_col=11):
     results = pd.DataFrame()
     cols = range(0, max_col)
-    for chunk in pd.read_csv('./data/index.csv', encoding="ISO-8859-1", chunksize=chunksize, header=None, usecols=cols):
+    for chunk in pd.read_csv(
+        './data/index.csv',
+        encoding="ISO-8859-1",
+        chunksize=chunksize,
+        usecols=cols,
+        header=None
+        ):
+
         df = chunk.fillna(0)
+        df[5] = pd.to_datetime(df[5].astype(str), format='mixed', errors="ignore")
+        try:
+            df[5] = df[5].dt.strftime('%m/%d/%Y %I:%M %p')
+        except:
+            pass
+
         target_oftype = COLUMN_TYPES[column](target)
         found = df.loc[df.iloc[:, column] == target_oftype]
         results = pd.concat([results, found], ignore_index=True, sort=False)

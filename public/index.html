@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,26 +9,55 @@
     <script src="./app.js" defer></script>
 </head>
 <body>
-    <ul class="title-bar pywebview-drag-region">
+    <ul class="title-bar pywebview-drag-region" style="z-index: 99999;">
         <li><span class="spacer" style="--width: 5px;"></span><span class="darker"><img src="order-tool.png">Order Tool</span></li>
         <li><button id="kill" onclick="destroy()">X</button></li>
     </ul>
 
+    <div id="full" class="pywebview-drag-region">
+        <div class="cmd" style="margin-top: 39px;">
+            <p>> Updating Index</p>
+            <p>> This can take several minutes</p>
+            <p>> Do not close the program</p>
+        </div>
+
+        <div style="pointer-events: none;">
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave" d="M -160 27.051 C -130 27.051 -102 26 -72 26 C -42 26 -14 32.701 16 32.701 C 46 32.701 74 26 104 26 C 134 26 162 31.288 192 31.288 L 192 88 L -160 88 L -160 27.051 Z" />
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(46, 255, 116, 0.7" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(46, 255, 116, 0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(46, 255, 116, 0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="rgb(46, 255, 116) " />
+                </g>
+            </svg>
+        </div>
+    </div>
+
     <div class="side" style="flex: 1; display: flex; overflow: auto;">
-        <div class="down"><span class="spacer"></span></div>
+        <!-- <div class="down"><span class="spacer"></span></div> -->
         <div class="scrollable down">
             <div class="content down">
                 <div class="side">
                     <div class="down">
                         <h1>Search Orders</h1>
-                        <p class="subtitle">in <span class="chip">C:\Users\Name\Files\Spreadsheets\</span></p>
-                        <p id="log"></p>
+                        <span id="folder-picker" class="chip glow"><span class="btn emoji"><img src="./folder-svgrepo-com.svg"></span><span class="string" style="margin-top: 4px;"><span style="font-weight: lighter;">&nbsp;missing&nbsp;</span></span></span>
+                        <p>Operator spreadsheets stored in the folder above will be indexed during the next user update.</p>
                     </div>
                     <div class="card glow" style="flex: 1; margin-left: 20px;">
-                        <h3>Last Update</h3>
-                        <p style="margin-top: -15px;">8/18/23</p>
-
-                        <button>Update Now</button>
+                        <div>
+                            <h3>Last Update</h3>
+                            <p id="last-edit" style="margin-top: -15px;"><span style="opacity: 0.7;">Unavailable</span></p>
+    
+                            <button id="update" onclick="updateIndex()">Update Now</button>
+                        </div>
+                        <div>
+                            <p>Any items added since the last update will not appear in search results.
+                                <br>Updating the index can take several minutes.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -39,11 +67,11 @@
                 <form onsubmit="doSearch(this)">
                     <table id="table">
                         <tr>
-                            <td>First Number</td>
-                            <td>Second Number</td>
-                            <td>idk</td>
-                            <td>idk</td>
-                            <td>Name</td>
+                            <td>Delivery</td>
+                            <td>CO</td>
+                            <td>Quantity</td>
+                            <td>Logos</td>
+                            <td>Operator</td>
                             <td>Date</td>
                         </tr>
                         <tr>
@@ -58,9 +86,9 @@
 
                     <br>
 
-                    <div class="side">
-                        <span class="full-spacer"></span>
-                        <button type="submit">
+                    <div class="side" style="gap: 10px; align-items: center;">
+                        <div id="response-container" style="flex: 1; min-height: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: #000000; color: #ffffff; padding: 10px; border-radius: 10px;"></div>
+                        <button type="submit" class="glow">
                             <span class="circle" aria-hidden="true">
                                 <span class="icon arrow"></span>
                                 <span class="icon spinner"></span>
@@ -71,8 +99,6 @@
                 </form>
 
                 <div id="results-area"></div>
-
-                <div id="response-container" style="word-wrap: break-word; white-space: normal; background: #000000; color: #ffffff; padding: 10px; border-radius: 5px;"></div>
                 <span>&nbsp;</span>
             </div>
         </div>

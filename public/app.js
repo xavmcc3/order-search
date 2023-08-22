@@ -2,7 +2,16 @@ document.querySelectorAll('form').forEach(form => form.addEventListener('submit'
 const log = document.getElementById('response-container');
 function handleForm(event) { event.preventDefault(); }
 addEventListener('pywebviewready', main);
-
+let observer = new IntersectionObserver(
+    (entries) => entries.forEach(e => {
+        e.target.toggleAttribute('stuck', e.intersectionRatio < 1)
+    }),
+    {
+        rootMargin: "0px",
+        threshold: 1.0,
+        root: null
+    }
+);
 
 function getColumn(table, cell) {
     if(cell == null) return [];
@@ -43,11 +52,15 @@ function removeTable() {
 }
 
 function createTable(data) {
+    try {
+        observer.unobserve(document.querySelector('#results-area table:first-child'));
+    } catch (error) { }
+    
     table = document.createElement('table');
     table.classList.add('data')
     removeTable();
 
-    addRow(table, ["First Number", "Second Number", "idk", "idk", "Name", "Date"])
+    addRow(table, ["Delivery", "CO", "Quantity", "Logos", "Operator", "Date"])
 
     for(const row of data) {
         row_arr = []
@@ -62,6 +75,7 @@ function createTable(data) {
     }
 
     document.querySelector('#results-area').appendChild(table);
+    observer.observe(table.querySelector('tr'));
     return table;
 }
 
@@ -106,6 +120,16 @@ function main() {
             input.select();// input.focus();
     });
 
+    // Use the folder picker button
+    document.querySelector('#folder-picker').addEventListener('click', async () => {
+        pywebview.api.setFolder().then(res => {
+            document.querySelector('#folder-picker').querySelector('.string').innerText = res.path;
+            log.innerText = res.message + '\n';
+        }).catch(err => {
+            log.innerText = err.message + '\n';
+        })
+    });
+
     initialize();
 }
 
@@ -145,8 +169,33 @@ function doSearch(form) {
     })
 }
 
+async function updateIndex() {
+    const btn = document.querySelector('button[type=submit]');
+    document.querySelector('#full').classList.add('active');
+    document.querySelector('#update').disabled = true;
+    btn.disabled = true;
+
+    pywebview.api.updateIndex().then(async res => {
+        document.querySelector('#update').disabled = false;
+        log.innerText = res.message + '\n';
+        btn.disabled = false;
+
+        const date = await pywebview.api.getLastModified();
+        document.querySelector('#full').classList.remove('active');
+        document.querySelector('#last-edit').innerText = date.date;
+    });
+
+}
+
 function initialize() {
-    pywebview.api.init().then(showResponse)
+    pywebview.api.init().then(res => {
+        document.querySelector('.string').innerText = res.path;
+        showResponse(res);
+    })
+
+    pywebview.api.getLastModified().then(res => {
+        document.querySelector('#last-edit').innerText = res.date;
+    })
 }
 
 function destroy() {

@@ -1,22 +1,29 @@
-import search_csv
-
-import pandas as pd
-import threading
+from generate_csv import generate_csv
+from datetime import datetime
 import webview
-import random
-import time
+import pathlib
 import sys
+
+import search_csv
+import asyncio
+import time
 
 class Api:
     def __init__(self):
         self.cancel_heavy_stuff_flag = False
 
-    def set_window(self, window):
+    def set_window(self, window: webview.Window):
         self.window = window
 
     def init(self):
+        path = "";
+        with open("./data/dir.txt", "r") as f:
+            path = f.read()
+            f.close()
+
         response = {
-            'message': 'Search Orders'
+            'message': 'Search Orders',
+            'path': path
         }
         return response
 
@@ -34,29 +41,52 @@ class Api:
         }
         return response
     
-
-    def doHeavyStuff(self):
-        time.sleep(0.1)  # sleep to prevent from the ui thread from freezing for a moment
-        now = time.time()
-        self.cancel_heavy_stuff_flag = False
-        for i in range(0, 1000000):
-            _ = i * random.randint(0, 1000)
-            if self.cancel_heavy_stuff_flag:
-                response = {'message': 'Operation cancelled'}
-                break
-        else:
-            then = time.time()
-            response = {
-                'message': 'Operation took {0:.1f} seconds on the thread {1}'.format((then - now), threading.current_thread())
+    def setFolder(self):
+        prev_path = "";
+        with open("./data/dir.txt", "r") as f:
+            prev_path = f.read()
+            f.close()
+        path = self.window.create_file_dialog(webview.FOLDER_DIALOG, allow_multiple=False)
+        if path == None:
+            return {
+                'message': f'folder change cancelled',
+                'path': prev_path
             }
+        with open("./data/dir.txt", 'w') as f:
+            f.write(path[0])
+            f.close()
+
+        response = {
+            'message': f'set folder to {path[0]}',
+            'path': path[0]
+        }
         return response
 
-    def cancelHeavyStuff(self):
-        time.sleep(0.1)
-        self.cancel_heavy_stuff_flag = True
+    def getLastModified(self):
+        response = {
+            'date': datetime.fromtimestamp(pathlib.Path('./data/index.csv').stat().st_mtime).strftime('%m/%d/%Y %I:%M %p')
+        }
+        return response
 
-    def error(self):
-        raise Exception('This is a Python exception')
+    def updateIndex(self):
+        time.sleep(0.1) 
+        folder = ""
+        start = time.time()
+        with open("./data/dir.txt", "r") as f:
+            folder = f.read()
+            f.close()
+
+        # asyncio.run(generate_csv(folder))
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+        loop.run_until_complete(generate_csv(folder))
+        loop.close()
+        
+        response = {
+            'message': f'updated index in {datetime.fromtimestamp((time.time() - start)).strftime("%H:%M:%S")}'
+        }
+        return response
 
 
 def main(window: webview.Window):
@@ -65,10 +95,10 @@ def main(window: webview.Window):
 if __name__ == "__main__":
     api = Api()
     window = webview.create_window(
-        'Woah dude!', './public/index.html',
-        width=1000, height=600,
-        resizable=False,
+        'Order Tool', './public/index.html',
+        width=1250, height=800,
         fullscreen=False,
+        resizable=False,
         frameless=True,
         js_api=api,
         )

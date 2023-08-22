@@ -25,10 +25,9 @@ def write_excel_to_csv(excel_path, csv_path):
         f.truncate()
     wb.close()
 
-if __name__ == "__main__":
-    load_dotenv()
+async def generate_csv(folder_path):
     csv_path = "./data/index.csv"
-    folder = os.getenv("EXCEL_DIR")
+    folder = folder_path
 
     start_time = datetime.now()
     open(csv_path, 'w').close()
@@ -44,3 +43,8 @@ if __name__ == "__main__":
             clrprint("[ERROR]", "in", path, clr="r,w,m")
             print(e)
     clrprint("[DONE] ", "Operator spreadsheets serialized in ", f"{datetime.now() - start_time}", ".", sep="", clr="g,w,y,w")
+
+if __name__ == "__main__":
+    load_dotenv()
+    folder = os.getenv("EXCEL_DIR")
+    generate_csv(folder)
