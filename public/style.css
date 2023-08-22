@@ -46,9 +46,12 @@ tr[stuck] td {
 }
 
 table:not(#table) tr:first-child {
-    /* NOTE idk about this */
     position: sticky;
     top: -1px;
+}
+
+table:not(#table) tr:not(:first-child) td {
+    user-select: contain;
 }
 
 button {
@@ -679,7 +682,7 @@ ul.title-bar img {
 }
 
 .emoji {
-    font-variant-emoji: emoji;
+    /* font-variant-emoji: emoji; */
     font-family: "Twemoji Mozilla",
         "Apple Color Emoji",
         "Segoe UI Emoji",
