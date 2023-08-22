@@ -41,6 +41,10 @@ td {
     transition: border 0.14s ease-in;
 }
 
+tr[stuck] {
+    box-shadow: 0 7px 0.7em #00000013;
+}
+
 tr[stuck] td {
     border-radius: 0 !important;
 }

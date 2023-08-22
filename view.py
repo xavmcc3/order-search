@@ -7,7 +7,6 @@ import sys
 import search_csv
 import asyncio
 import time
-#import eel
 
 class Api:
     @staticmethod
@@ -15,7 +14,12 @@ class Api:
         Api.window = window
 
     @staticmethod
-    def init():
+    def main(window):
+        Api.set_window(window)
+
+
+    def init(self):
+        print("AAAAAAAAAAA")
         path = "";
         with open("./data/dir.txt", "r") as f:
             path = f.read()
@@ -27,17 +31,10 @@ class Api:
         }
         return response
 
-    @staticmethod
-    def main():
-        pass
-
-
-    @staticmethod
-    def destroy():
+    def destroy(self):
         Api.window.destroy()
 
-    @staticmethod
-    def doSearch(value, column):
+    def doSearch(self, value, column):
         st = time.time()
         results = search_csv.search_for(value, max(0, column - 1), max_col=6);
 
@@ -47,8 +44,7 @@ class Api:
         }
         return response
     
-    @staticmethod
-    def setFolder():
+    def setFolder(self):
         prev_path = "";
         with open("./data/dir.txt", "r") as f:
             prev_path = f.read()
@@ -69,15 +65,13 @@ class Api:
         }
         return response
 
-    @staticmethod
-    def getLastModified():
+    def getLastModified(self):
         response = {
             'date': datetime.fromtimestamp(pathlib.Path('./data/index.csv').stat().st_mtime).strftime('%m/%d/%Y %I:%M %p')
         }
         return response
 
-    @staticmethod
-    def updateIndex():
+    def updateIndex(self):
         time.sleep(0.1) 
         folder = ""
         start = time.time()
@@ -96,6 +90,9 @@ class Api:
         }
         return response
 
+# Build with `python -m PyInstaller specs/order-search.spec`
+# or ``
+
 if __name__ == "__main__":
     window = webview.create_window(
         'Order Tool', './public/index.html',
@@ -103,12 +100,11 @@ if __name__ == "__main__":
         fullscreen=False,
         resizable=False,
         frameless=True,
-        js_api=Api,
+        js_api=Api(),
         )
     
     try:
-        Api.set_window(window)
         webview.start(Api.main, window, http_server=True)
-    except KeyError:
-        print("Window closed")
+    except (Exception, KeyError, KeyboardInterrupt) as e:
+        print("Window closed", e)
         sys.exit()
