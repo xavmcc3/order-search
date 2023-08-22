@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 from datetime import datetime
 from clrprint import clrprint
-from pathlib import Path
 import openpyxl
+import asyncio
 import csv
 import os
 
@@ -25,8 +25,7 @@ def write_excel_to_csv(excel_path, csv_path):
         f.truncate()
     wb.close()
 
-async def generate_csv(folder_path):
-    csv_path = "./data/index.csv"
+async def generate_csv(folder_path, csv_path):
     folder = folder_path
 
     start_time = datetime.now()
@@ -47,4 +46,4 @@ async def generate_csv(folder_path):
 if __name__ == "__main__":
     load_dotenv()
     folder = os.getenv("EXCEL_DIR")
-    generate_csv(folder)
+    asyncio.run(generate_csv(folder, './res/index.csv'))

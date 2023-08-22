@@ -7,11 +7,11 @@ def str_to_time(string):
 
 COLUMN_TYPES = [int, int, None, None, str, str_to_time]
 
-def search_for(target, column=0, chunksize=1000, max_col=11):
+def search_for(path, target, column=0, chunksize=1000, max_col=11):
     results = pd.DataFrame()
     cols = range(0, max_col)
     for chunk in pd.read_csv(
-        './data/index.csv',
+        path,
         encoding="ISO-8859-1",
         chunksize=chunksize,
         usecols=cols,
