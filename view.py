@@ -7,15 +7,15 @@ import sys
 import search_csv
 import asyncio
 import time
+#import eel
 
 class Api:
-    def __init__(self):
-        self.cancel_heavy_stuff_flag = False
+    @staticmethod
+    def set_window(window: webview.Window):
+        Api.window = window
 
-    def set_window(self, window: webview.Window):
-        self.window = window
-
-    def init(self):
+    @staticmethod
+    def init():
         path = "";
         with open("./data/dir.txt", "r") as f:
             path = f.read()
@@ -27,11 +27,17 @@ class Api:
         }
         return response
 
-    
-    def destroy(self):
-        self.window.destroy()
+    @staticmethod
+    def main():
+        pass
 
-    def doSearch(self, value, column):
+
+    @staticmethod
+    def destroy():
+        Api.window.destroy()
+
+    @staticmethod
+    def doSearch(value, column):
         st = time.time()
         results = search_csv.search_for(value, max(0, column - 1), max_col=6);
 
@@ -41,12 +47,13 @@ class Api:
         }
         return response
     
-    def setFolder(self):
+    @staticmethod
+    def setFolder():
         prev_path = "";
         with open("./data/dir.txt", "r") as f:
             prev_path = f.read()
             f.close()
-        path = self.window.create_file_dialog(webview.FOLDER_DIALOG, allow_multiple=False)
+        path = Api.window.create_file_dialog(webview.FOLDER_DIALOG, allow_multiple=False)
         if path == None:
             return {
                 'message': f'folder change cancelled',
@@ -62,13 +69,15 @@ class Api:
         }
         return response
 
-    def getLastModified(self):
+    @staticmethod
+    def getLastModified():
         response = {
             'date': datetime.fromtimestamp(pathlib.Path('./data/index.csv').stat().st_mtime).strftime('%m/%d/%Y %I:%M %p')
         }
         return response
 
-    def updateIndex(self):
+    @staticmethod
+    def updateIndex():
         time.sleep(0.1) 
         folder = ""
         start = time.time()
@@ -76,7 +85,6 @@ class Api:
             folder = f.read()
             f.close()
 
-        # asyncio.run(generate_csv(folder))
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
@@ -88,24 +96,19 @@ class Api:
         }
         return response
 
-
-def main(window: webview.Window):
-    pass
-
 if __name__ == "__main__":
-    api = Api()
     window = webview.create_window(
         'Order Tool', './public/index.html',
         width=1250, height=800,
         fullscreen=False,
         resizable=False,
         frameless=True,
-        js_api=api,
+        js_api=Api,
         )
     
     try:
-        api.set_window(window)
-        webview.start(main, window, http_server=True)
+        Api.set_window(window)
+        webview.start(Api.main, window, http_server=True)
     except KeyError:
         print("Window closed")
         sys.exit()
