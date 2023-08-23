@@ -1,12 +1,12 @@
 from dotenv import load_dotenv
 from datetime import datetime
 from clrprint import clrprint
+from pathlib import Path
 import openpyxl
-import asyncio
 import csv
 import os
 
-def write_excel_to_csv(excel_path, csv_path):
+def write_excel_to_csv(excel_path, csv_path, check_blanks=True, max_blanks=1):
     clrprint("Serializing", excel_path, end="", clr="w,m")
     print("...")
 
@@ -15,8 +15,14 @@ def write_excel_to_csv(excel_path, csv_path):
 
     with open(csv_path, 'a', newline="") as f:
         c = csv.writer(f)
+        blanks = 0
         for row in ws.iter_rows(min_row=2, max_col=11):
             if row[0].value == None and row[1].value == None:
+                if check_blanks:
+                    continue
+                blanks += 1
+                if blanks > max_blanks:
+                    break
                 continue
             values = []
             for cell in row:
@@ -24,8 +30,9 @@ def write_excel_to_csv(excel_path, csv_path):
             c.writerow(values)
         f.truncate()
     wb.close()
+    return f"> Serialized <color-m>{excel_path}<color-m>".replace("\\", '/')
 
-async def generate_csv(folder_path, csv_path):
+async def generate_csv(folder_path, csv_path, output=lambda _ : "", check_blanks=True, max_blanks=1):
     folder = folder_path
 
     start_time = datetime.now()
@@ -37,13 +44,16 @@ async def generate_csv(folder_path, csv_path):
             continue
         path = os.path.abspath(os.path.join(folder, file))
         try:
-            write_excel_to_csv(path, csv_path)
+            output(write_excel_to_csv(path, csv_path, check_blanks=check_blanks, max_blanks=max_blanks))
         except Exception as e:
             clrprint("[ERROR]", "in", path, clr="r,w,m")
             print(e)
+
+            output(str(e))
+            output(f"<color-r>[ERROR]</color-r> in <color-m>{path}</color-m>".replace("\\", '/'))
     clrprint("[DONE] ", "Operator spreadsheets serialized in ", f"{datetime.now() - start_time}", ".", sep="", clr="g,w,y,w")
 
 if __name__ == "__main__":
     load_dotenv()
     folder = os.getenv("EXCEL_DIR")
-    asyncio.run(generate_csv(folder, './res/index.csv'))
+    generate_csv(folder)

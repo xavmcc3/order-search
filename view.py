@@ -26,25 +26,72 @@ def local_path(relative_path):
 
     return os.path.join(application_path, relative_path)
 
+def print_around(func):
+    def call(*args, **kwargs):
+        print("======================================")
+        func(*args, **kwargs)
+        print("======================================\n")
+
+    return call
+
+@print_around
+def fancy_print(msg):
+    print(msg)
+
 class Api:
     @staticmethod
     def set_window(window: webview.Window):
         Api.window = window
 
     @staticmethod
+    def get_csv():
+        Api.csv = local_path('res\index.csv')
+        with open(Api.dirs, 'r') as f:
+            data = f.readlines()
+            try:
+                Api.csv = data[1]
+            except IndexError:
+                pass
+            f.close()
+
+    @staticmethod
+    def win_log(msg):
+        Api.window.evaluate_js(f'addToLog("{msg}")')
+
+    @staticmethod
     def main(window):
+        Api.dirs = local_path('res\dir.txt')
         Api.set_window(window)
+        if not os.path.exists(local_path('res\\')):
+            os.makedirs(local_path('res\\'))
+
+        try:
+            open(Api.dirs, 'x')
+        except FileExistsError:
+            pass
+        Api.get_csv()
 
 
     def init(self):
-        path = "";
-        with open(local_path("res\dir.txt"), "r") as f:
-            path = f.read()
+        lines = "";
+        with open(local_path(Api.dirs), "r") as f:
+            lines = f.readlines()
             f.close()
 
+        try:
+            folder  = lines[0]
+        except:
+            folder = 'missing'
+
+        try:
+            csv = lines[1]
+        except:
+            csv = 'missing'
+        
         response = {
             'message': 'Search Orders',
-            'path': path
+            'path': folder,
+            'csv': csv
         }
         return response
 
@@ -53,7 +100,7 @@ class Api:
 
     def doSearch(self, value, column):
         st = time.time()
-        results = search_csv.search_for(local_path('res\index.csv'), value, max(0, column - 1), max_col=6);
+        results = search_csv.search_for(Api.csv, value, max(0, column - 1), max_col=6);
 
         response = {
             'message': f'search completed in {round((time.time() - st) * 100) / 100}s',
@@ -62,18 +109,20 @@ class Api:
         return response
     
     def setFolder(self):
-        prev_path = "";
-        with open(local_path("res\dir.txt"), "r") as f:
-            prev_path = f.read()
-            f.close()
         path = Api.window.create_file_dialog(webview.FOLDER_DIALOG, allow_multiple=False)
         if path == None:
-            return {
-                'message': f'folder change cancelled',
-                'path': prev_path
-            }
-        with open(local_path("res\dir.txt"), 'w') as f:
-            f.write(path[0])
+            return { 'message': f'folder change cancelled' }
+        
+        with open(Api.dirs, 'r') as f:
+            data = f.readlines()
+            f.close()
+        with open(Api.dirs, 'w') as f:
+            while len(data) < 1:
+                data.append('')
+            data[0] = path[0]
+            for i in range(len(data)):
+                data[i] = data[i].rstrip()
+            f.write('\n'.join(data).strip())
             f.close()
 
         response = {
@@ -81,11 +130,38 @@ class Api:
             'path': path[0]
         }
         return response
+    
+    def setFile(self):
+        file_types = ('CSV Files (*.csv)', 'All files (*.*)')
+        path = window.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False, file_types=file_types)
+        if path == None:
+            return { 'message': f'file change cancelled' }
+        with open(Api.dirs, 'r') as f:
+            data = f.readlines()
+            f.close()
+        with open(Api.dirs, 'w') as f:
+            for i in range(len(data)):
+                data[i] = data[i].rstrip()
+            while len(data) < 2:
+                data.append('')
+            data[1] = path[0]
+            f.write('\n'.join(data).rstrip())
+            f.close()
+
+        Api.get_csv()
+        response = {
+            'message': f'set file to {path[0]}',
+            'path': path[0]
+        }
+        return response
 
     def getLastModified(self):
-        # NOTE This might not work
+        try:
+            date = datetime.fromtimestamp(pathlib.Path(Api.csv).stat().st_mtime).strftime('%m/%d/%Y %I:%M %p')
+        except:
+            date = "Unavailable"
         response = {
-            'date': datetime.fromtimestamp(pathlib.Path(local_path("res\index.csv")).stat().st_mtime).strftime('%m/%d/%Y %I:%M %p')
+            'date': date
         }
         return response
 
@@ -93,15 +169,23 @@ class Api:
         time.sleep(0.1) 
         folder = ""
         start = time.time()
-        with open(local_path("res\dir.txt"), "r") as f:
-            folder = f.read()
+        with open(Api.dirs, "r") as f:
+            folder = f.readlines()
+            try:
+                folder = folder[0].strip()
+            except IndexError:
+                return { 'message': str(Exception("No folder to read from")) }
             f.close()
 
+        print(folder)
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-        loop.run_until_complete(generate_csv(folder, local_path('res\index.csv')))
-        loop.close()
+        try:
+            loop.run_until_complete(generate_csv(folder, Api.csv, output=Api.win_log, check_blanks=False, max_blanks=10))
+            loop.close()
+        except Exception as e:
+            return { 'message': str(e) }
         
         response = {
             'message': f'updated index in {datetime.fromtimestamp((time.time() - start)).strftime("%M:%S")}'
@@ -115,7 +199,7 @@ if __name__ == "__main__":
     html = resource_path("public\index.html")
     window = webview.create_window(
         'Order Tool', html,
-        width=1250, height=800,
+        width=1050, height=700,
         fullscreen=False,
         resizable=False,
         frameless=True,

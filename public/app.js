@@ -13,6 +13,15 @@ let observer = new IntersectionObserver(
     }
 );
 
+function addToLog(msg) {
+    const parent = document.querySelector('#cmd');
+    const text = document.createElement('p');
+    text.innerHTML = msg;
+
+    parent.insertAdjacentElement('afterbegin', text);
+    return text.innerText;
+}
+
 function getColumn(table, cell) {
     if(cell == null) return [];
     const parent = cell.parentNode;
@@ -123,8 +132,23 @@ function main() {
     // Use the folder picker button
     document.querySelector('#folder-picker').addEventListener('click', async () => {
         pywebview.api.setFolder().then(res => {
-            document.querySelector('#folder-picker').querySelector('.string').innerText = res.path;
+            if(res.path != null)
+                document.querySelector('#folder-picker').querySelector('.string').innerText = res.path;
             log.innerText = res.message + '\n';
+        }).catch(err => {
+            log.innerText = err.message + '\n';
+        })
+    });
+
+    // Use the file picker button
+    document.querySelector('#file-picker').addEventListener('click', async () => {
+        pywebview.api.setFile().then(async res => {
+            if(res.path != null)
+                document.querySelector('#file-picker').querySelector('.string').innerText = res.path;
+            log.innerText = res.message + '\n';
+
+            const date = await pywebview.api.getLastModified();
+            document.querySelector('#last-edit').innerText = date.date;
         }).catch(err => {
             log.innerText = err.message + '\n';
         })
@@ -168,7 +192,6 @@ function doSearch(form) {
         log.innerText = err.message + '\n';
     })
 }
-
 async function updateIndex() {
     const btn = document.querySelector('button[type=submit]');
     document.querySelector('#full').classList.add('active');
@@ -189,7 +212,8 @@ async function updateIndex() {
 
 function initialize() {
     pywebview.api.init().then(res => {
-        document.querySelector('.string').innerText = res.path;
+        document.querySelector('#folder-picker').querySelector('.string').innerText = res.path;
+        document.querySelector('#file-picker').querySelector('.string').innerText = res.csv;
         showResponse(res);
     })
 

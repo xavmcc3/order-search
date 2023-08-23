@@ -17,9 +17,10 @@
     <div id="full" class="pywebview-drag-region">
         <div class="cmd" style="margin-top: 39px;">
             <p>> Updating Index</p>
-            <p>> This can take several minutes</p>
-            <p>> Do not close the program</p>
+            <p>This can take several minutes</p>
+            <p>Do not close the program unless necessary</p>
         </div>
+        <div id="cmd" class="cmd" style="margin-top: 97px;"></div>
 
         <div style="pointer-events: none;">
             <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -44,8 +45,12 @@
                 <div class="side">
                     <div class="down">
                         <h1>Search Orders</h1>
-                        <span id="folder-picker" class="chip glow"><span class="btn emoji"><img src="./folder-svgrepo-com.svg"></span><span class="string" style="margin-top: 4px;"><span style="font-weight: lighter;">&nbsp;missing&nbsp;</span></span></span>
-                        <p>Operator spreadsheets stored in the folder above will be indexed during the next user update.</p>
+                        <span style="margin: 10px 0 10px 0;">CSV File</span>
+                        <span id="file-picker" class="chip glow"><span class="btn emoji"><img src="./file-excel-svgrepo-com.svg" style="scale: 1.2;"></span><span class="string" style="margin-top: 4px;">&nbsp;<span style="font-weight: lighter;">missing</span>&nbsp;</span></span>
+                        <span>&nbsp;</span>
+
+                        <span style="margin-bottom: 10px;">Operator Spreadsheets</span>
+                        <span id="folder-picker" class="chip glow"><span class="btn emoji"><img src="./folder-svgrepo-com.svg"></span><span class="string" style="margin-top: 4px;">&nbsp;<span style="font-weight: lighter;">missing</span>&nbsp;</span></span>
                     </div>
                     <div class="card glow" style="flex: 1; margin-left: 20px;">
                         <div>

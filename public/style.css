@@ -7,6 +7,20 @@ html, body {
     user-select: none;
 }
 
+html {
+    border: 1px solid #ffffff;
+    width: calc(100vw - 1px);
+    box-sizing: border-box;
+}
+
+color-r {
+    color: #ff0000;
+}
+
+color-m {
+    color: #ff00ff;
+}
+
 body {
     flex-flow: column nowrap;
     justify-content: stretch;
@@ -15,6 +29,7 @@ body {
     display: flex;
 
     /* color: #ffffff; */
+    /* max-width: 100%; */
 
     flex-flow: column nowrap;
     justify-content: flex-start;
@@ -753,6 +768,8 @@ ul.title-bar img {
     text-align: left;
     direction: rtl;
     z-index: 4;
+
+    padding: 0 5px;
 }
 
 

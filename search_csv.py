@@ -7,7 +7,7 @@ def str_to_time(string):
 
 COLUMN_TYPES = [int, int, None, None, str, str_to_time]
 
-def search_for(path, target, column=0, chunksize=1000, max_col=11):
+def search_for(path, target, column=0, chunksize=1000, max_col=6):
     results = pd.DataFrame()
     cols = range(0, max_col)
     for chunk in pd.read_csv(
@@ -42,7 +42,7 @@ if __name__ == "__main__":
         clrprint("[Error]", f"{e}", sep="", clr="r,w")
 
     start_time = datetime.now()
-    results = search_for(target, column)
+    results = search_for('res\index.csv', target, column)
 
     print(results)
     clrprint("[DONE] ", "Search completed in ", f"{datetime.now() - start_time}", ".", sep="", clr="g,w,y,w")
