@@ -193,7 +193,7 @@ class Api:
         return response
 
 # Build with `python -m PyInstaller --clean order-search.spec`
-# or `python -m PyInstaller --onefile --name=order-search --icon=order-tool.ico --clean --add-data="public/index.html;public/" --add-data="public/app.js;public/" --add-data="public/style.css;public/" --add-data="public/folder-svgrepo-com.svg;public/" --add-data="public/order-tool.png;public/" --add-data="public/order-tool.ico;public/" --windowed --noconsole view.py`
+# or `python -m PyInstaller --onefile --name=order-search --icon=order-tool.ico --clean --add-data="public/*;public/" --windowed --noconsole view.py`
 
 if __name__ == "__main__":
     html = resource_path("public\index.html")
