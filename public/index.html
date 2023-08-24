@@ -46,7 +46,16 @@
                     <div class="down">
                         <h1>Search Orders</h1>
                         <span style="margin: 10px 0 10px 0;">CSV File</span>
-                        <span id="file-picker" class="chip glow"><span class="btn emoji"><img src="./file-excel-svgrepo-com.svg" style="scale: 1.2;"></span><span class="string" style="margin-top: 4px;">&nbsp;<span style="font-weight: lighter;">missing</span>&nbsp;</span></span>
+                        <span class="side" style="gap: 10px;">
+                            <span id="file-picker" class="chip glow" style="max-width: calc(300px - 35px - 2em);">
+                                <span class="btn emoji"><img src="./file-excel-svgrepo-com.svg" style="scale: 1.2;"></span>
+                                <span class="string" style="margin-top: 4px;">
+                                    &nbsp;<span style="font-weight: lighter;">missing</span>&nbsp;
+                                </span>
+                            </span>
+
+                            <button onclick="openCsv()" class="glow open-button">Open</button>
+                        </span>
                         <span>&nbsp;</span>
 
                         <span style="margin-bottom: 10px;">Operator Spreadsheets</span>
@@ -60,8 +69,11 @@
                             <button id="update" onclick="updateIndex()">Update Now</button>
                         </div>
                         <div>
-                            <p>Any items added since the last update will not appear in search results.
-                                <br>Updating the index can take several minutes.</p>
+                            <p>See the <button id="error-log-button" onclick="openErrLog()">Error Log</button></p>
+                            <p>
+                                Updating the index can take several minutes.<br>
+                                Any items added since the last update will not appear in search results.
+                            </p>
                         </div>
                     </div>
                 </div>

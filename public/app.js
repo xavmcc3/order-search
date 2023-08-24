@@ -184,6 +184,7 @@ function doSearch(form) {
     form.reset();
 
     pywebview.api.doSearch(val, col).then(res => {
+        document.querySelector('#file-picker').querySelector('.string').innerText = res.path;
         log.innerText = res.message + '\n';
         data = JSON.parse(res.data)["data"];
         btn.disabled = false;
@@ -200,14 +201,23 @@ async function updateIndex() {
 
     pywebview.api.updateIndex().then(async res => {
         document.querySelector('#update').disabled = false;
+        document.querySelector('#cmd').innerHTML = ""
         log.innerText = res.message + '\n';
         btn.disabled = false;
+        removeTable();
 
         const date = await pywebview.api.getLastModified();
         document.querySelector('#full').classList.remove('active');
         document.querySelector('#last-edit').innerText = date.date;
     });
+}
 
+async function openErrLog() {
+    await pywebview.api.openErrLog();
+}
+
+async function openCsv() {
+    await pywebview.api.openCsv();
 }
 
 function initialize() {

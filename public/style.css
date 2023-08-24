@@ -174,7 +174,7 @@ button:active {
     width: 100vw;
     height: 60vh;
     opacity: 0;
-    transition: all 8s ease-in-out;
+    transition: all 7s ease-in-out;
 }
 
 #full.active .waves {
@@ -787,4 +787,15 @@ ul.title-bar img {
     font-size: 1em;
     font-weight: bold;
     margin: -10px 0 0 0;
+}
+
+.open-button {
+    box-shadow: 0 7px 0.6em #00000014;
+    border: 2px solid #4eff35;
+    box-sizing: border-box;
+}
+
+.open-button:hover {
+    background: #4eff35;
+    color: #ffffff;
 }

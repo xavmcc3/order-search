@@ -55,18 +55,33 @@ class Api:
             f.close()
 
     @staticmethod
-    def win_log(msg):
-        Api.window.evaluate_js(f'addToLog("{msg}")')
+    def win_log(msg, is_error=False, log=True):
+        if log:
+            Api.window.evaluate_js(f'addToLog("{msg}")')
+        if is_error:
+            Api.errs.append(msg)
+
+    @staticmethod
+    def write_errs():
+        with open(Api.err_log, 'w') as f:
+            f.write('\n'.join(Api.errs).rstrip())
+            f.close()
 
     @staticmethod
     def main(window):
+        Api.err_log = local_path('res\err_log.txt')
         Api.dirs = local_path('res\dir.txt')
         Api.set_window(window)
+        Api.errs = []
+
         if not os.path.exists(local_path('res\\')):
             os.makedirs(local_path('res\\'))
-
         try:
             open(Api.dirs, 'x')
+        except FileExistsError:
+            pass
+        try:
+            open(Api.err_log, 'x')
         except FileExistsError:
             pass
         Api.get_csv()
@@ -86,7 +101,7 @@ class Api:
         try:
             csv = lines[1]
         except:
-            csv = 'missing'
+            csv = Api.csv
         
         response = {
             'message': 'Search Orders',
@@ -97,6 +112,12 @@ class Api:
 
     def destroy(self):
         Api.window.destroy()
+
+    def openErrLog(self):
+        os.startfile(Api.err_log)
+
+    def openCsv(self):
+        os.startfile(Api.csv)
 
     def doSearch(self, value, column):
         st = time.time()
@@ -111,7 +132,8 @@ class Api:
 
         response = {
             'message': f'search completed in {round((time.time() - st) * 100) / 100}s',
-            'data': results.to_json(orient='table')
+            'data': results.to_json(orient='table'),
+            'path': Api.csv
         }
         return response
     
@@ -185,12 +207,18 @@ class Api:
             f.close()
 
         print(folder)
+        Api.errs = []
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
         try:
             loop.run_until_complete(generate_csv(folder, Api.csv, output=Api.win_log, check_blanks=False, max_blanks=10))
             loop.close()
+        except Exception as e:
+            return { 'message': str(e) }
+        
+        try:
+            Api.write_errs()
         except Exception as e:
             return { 'message': str(e) }
         

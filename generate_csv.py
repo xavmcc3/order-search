@@ -49,7 +49,8 @@ async def generate_csv(folder_path, csv_path, output=lambda _ : "", check_blanks
             clrprint("[ERROR]", "in", path, clr="r,w,m")
             print(e)
 
-            output(str(e))
+            output(f"[ERROR] in {path}".replace("\\", '/'), True, False)
+            output(str(e), True)
             output(f"<color-r>[ERROR]</color-r> in <color-m>{path}</color-m>".replace("\\", '/'))
     clrprint("[DONE] ", "Operator spreadsheets serialized in ", f"{datetime.now() - start_time}", ".", sep="", clr="g,w,y,w")
 

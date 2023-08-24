@@ -167,3 +167,4 @@ res/
 ./res/
 res/*
 dir.txt
+err_log.txt
