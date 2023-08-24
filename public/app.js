@@ -66,18 +66,17 @@ function createTable(data) {
     } catch (error) { }
     
     table = document.createElement('table');
-    table.classList.add('data')
+    table.classList.add('data');
     removeTable();
 
-    addRow(table, ["Delivery", "CO", "Quantity", "Logos", "Operator", "Date"])
+    const COLUMN_NAMES = ["Delivery", "CO", "Quantity", "Logos", "Operator", "Date"];
+    addRow(table, COLUMN_NAMES);
 
     for(const row of data) {
         row_arr = []
-        for(const cell in row) {
-            if(isNaN(Math.round(cell))) continue;
-            const value = row[cell];
-
-            row_arr[Math.round(cell)] = value;
+        for(const key of COLUMN_NAMES) {
+            const value = row[key];
+            row_arr[COLUMN_NAMES.indexOf(key)] = value;
         }
 
         addRow(table, row_arr);

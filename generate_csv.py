@@ -6,6 +6,7 @@ import openpyxl
 import csv
 import os
 
+COLUMN_TYPES = [int, int, None, None, None, None]
 def write_excel_to_csv(excel_path, csv_path, check_blanks=True, max_blanks=1):
     clrprint("Serializing", excel_path, end="", clr="w,m")
     print("...")
@@ -16,7 +17,7 @@ def write_excel_to_csv(excel_path, csv_path, check_blanks=True, max_blanks=1):
     with open(csv_path, 'a', newline="") as f:
         c = csv.writer(f)
         blanks = 0
-        for row in ws.iter_rows(min_row=2, max_col=11):
+        for row in ws.iter_rows(min_row=2, max_col=6):
             if row[0].value == None and row[1].value == None:
                 if check_blanks:
                     continue
@@ -37,6 +38,11 @@ async def generate_csv(folder_path, csv_path, output=lambda _ : "", check_blanks
 
     start_time = datetime.now()
     open(csv_path, 'w').close()
+    with open(csv_path, 'a', newline="") as f:
+        c = csv.writer(f)
+        c.writerow(['Delivery', 'CO', 'Quantity', 'Logos', 'Operator', 'Date'])
+        f.truncate()
+    
     for file in os.listdir(folder):
         if not file.endswith(".xlsx"):
             continue

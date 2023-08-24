@@ -6,6 +6,7 @@ def str_to_time(string):
     return datetime.strptime(string, "%Y-%m-%d")
 
 COLUMN_TYPES = [int, int, None, None, str, str_to_time]
+COLUMN_NAMES = ["Delivery", "CO", "Quantity", "Logos", "Operator", "Date"]
 
 def search_for(path, target, column=0, chunksize=1000, max_col=6):
     results = pd.DataFrame()
@@ -14,14 +15,15 @@ def search_for(path, target, column=0, chunksize=1000, max_col=6):
         path,
         encoding="ISO-8859-1",
         chunksize=chunksize,
-        usecols=cols,
-        header=None
+        usecols=COLUMN_NAMES
         ):
 
         df = chunk.fillna(0)
-        df[5] = pd.to_datetime(df[5].astype(str), format='mixed', errors="ignore")
+        df["Date"] = pd.to_datetime(df["Date"].astype(str), format='mixed', errors="ignore")
+        df["Delivery"] = df["Delivery"].astype('int64', errors="ignore")
+        df["CO"] = df["CO"].astype('int64', errors="ignore")
         try:
-            df[5] = df[5].dt.strftime('%m/%d/%Y %I:%M %p')
+            df["Date"] = df["Date"].dt.strftime('%m/%d/%Y %I:%M %p')
         except:
             pass
 
