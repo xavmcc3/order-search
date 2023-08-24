@@ -100,7 +100,14 @@ class Api:
 
     def doSearch(self, value, column):
         st = time.time()
-        results = search_csv.search_for(Api.csv, value, max(0, column - 1), max_col=6);
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+        try:
+            results = search_csv.search_for(Api.csv, value, max(0, column - 1), max_col=6);
+        except Exception as e:
+            raise e
 
         response = {
             'message': f'search completed in {round((time.time() - st) * 100) / 100}s',
